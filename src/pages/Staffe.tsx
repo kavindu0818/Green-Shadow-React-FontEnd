@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
-import {useEffect, useState} from "react";
-import {deleteStaff, getAllStaffs} from "../redux/StaffSlice.ts";
+import { useEffect, useState } from "react";
+import { deleteStaff, getAllStaffs } from "../redux/StaffSlice.ts";
 import { StaffModel } from "../model/StaffModel.ts";
 import UpdateStaff from "../commponet/staff/UpdateStaff.tsx";
 import AddStaff from "../commponet/staff/AddStaff.tsx";
-import {AppDispatch} from "../store/store.tsx";
+import { AppDispatch } from "../store/store.tsx";
 
 export function Staffe() {
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
@@ -13,17 +13,15 @@ export function Staffe() {
     const [searchTerm, setSearchTerm] = useState("");
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
     const [selectedStaff, setSelectedStaff] = useState<StaffModel | null>(null);
+
     const dispatch = useDispatch<AppDispatch>();
-    const staffModels: StaffModel[] = useSelector((state: any) => state.field); // Redux selector for crops
 
-    useEffect(() => {
-        dispatch(getAllStaffs()); // Fetch latest field data
-    }, [dispatch, staffModels]); // Re-fetch whenever fieldModels updates
-
+    // Ensure staffModels is an array (avoid undefined issues)
+    const staffModels: StaffModel[] = useSelector((state: any) => state.staff) || [];
 
     useEffect(() => {
         dispatch(getAllStaffs());
-    }, [dispatch]);
+    }, [dispatch]); // Avoid unnecessary re-fetching
 
     const handleViewClick = (staff: StaffModel) => {
         setSelectedStaff(staff);
@@ -48,13 +46,13 @@ export function Staffe() {
         setIsAddModalOpen(true);
     };
 
+    // ✅ FIX: Prevent undefined `.toLowerCase()` error
     const filteredStaff = staffModels.filter((staff) =>
-        staff.firstName.toLowerCase().includes(searchTerm.toLowerCase())
+        staff.firstName && staff.firstName.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
         <>
-
             <section>
                 <button
                     type="button"
@@ -65,7 +63,6 @@ export function Staffe() {
                     +ADD STAFF
                 </button>
             </section>
-
 
             <section id="viewDetails" className="block">
                 <section
@@ -100,44 +97,41 @@ export function Staffe() {
                     <tbody>
                     {filteredStaff.length > 0 ? (
                         filteredStaff.map((staff) => (
-                        <tr
-                            key={staff.staffCode}
-                            className="text-lg font-medium text-black"
-                        >
-                            <td className="p-2 border border-gray-400">{staff.staffCode}</td>
-                            <td className="p-2 border border-gray-400">
-                                {staff.firstName + " " + staff.lastName}
-                            </td>
-                            <td className="p-2 border border-gray-400">{staff.contact}</td>
-                            <td className="p-2 border border-gray-400">{staff.designation}</td>
-                            <td className="p-2 border border-gray-400">
-                                <button
-                                    type="button"
-                                    className="border-2 border-blue-500 text-black px-4 py-1 rounded hover:bg-blue-200"
-                                    onClick={() => handleViewClick(staff)}
-                                >
-                                    View
-                                </button>
-                                <button
-                                    type="button"
-                                    className="border-2 border-yellow-400 text-black px-4 py-1 ml-2 rounded hover:bg-yellow-600"
-                                    onClick={() => handleEditClick(staff)}
-                                >
-                                    Edit
-                                </button>
-                                <button
-                                    type="button"
-                                    className="border-2 border-red-500 px-4 py-1 ml-2 rounded hover:bg-red-500 text-white"
-                                    onClick={() => handleDeleteClick(staff.staffCode)}
-                                >
-                                    Delete
-                                </button>
-                            </td>
-                        </tr>
+                            <tr key={staff.staffCode} className="text-lg font-medium text-black">
+                                <td className="p-2 border border-gray-400">{staff.staffCode}</td>
+                                <td className="p-2 border border-gray-400">
+                                    {staff.firstName + " " + staff.lastName}
+                                </td>
+                                <td className="p-2 border border-gray-400">{staff.contact}</td>
+                                <td className="p-2 border border-gray-400">{staff.designation}</td>
+                                <td className="p-2 border border-gray-400">
+                                    <button
+                                        type="button"
+                                        className="border-2 border-blue-500 text-black px-4 py-1 rounded hover:bg-blue-200"
+                                        onClick={() => handleViewClick(staff)}
+                                    >
+                                        View
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="border-2 border-yellow-400 text-black px-4 py-1 ml-2 rounded hover:bg-yellow-600"
+                                        onClick={() => handleEditClick(staff)}
+                                    >
+                                        Edit
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="border-2 border-red-500 px-4 py-1 ml-2 rounded hover:bg-red-500 text-white"
+                                        onClick={() => handleDeleteClick(staff.staffCode)}
+                                    >
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
                         ))
                     ) : (
                         <tr>
-                            <td colSpan={4} className="text-center py-2">No staffs found</td>
+                            <td colSpan={5} className="text-center py-2">No staff found</td>
                         </tr>
                     )}
                     </tbody>
@@ -145,41 +139,35 @@ export function Staffe() {
             </section>
 
             {/* Modals */}
-            {isUpdateModalOpen && staffToEdit && (
-                <UpdateStaff
-                    staffToEdit={staffToEdit}
-                    onClose={() => setIsUpdateModalOpen(false)}
-                />
-            )}
+            <div>
+                {isUpdateModalOpen && staffToEdit && (
+                    <UpdateStaff staffToEdit={staffToEdit} onClose={() => setIsUpdateModalOpen(false)} />
+                )}
 
-            {isAddModalOpen && <AddStaff onClose={() => setIsAddModalOpen(false)} />}
+                {isAddModalOpen && <AddStaff onClose={() => setIsAddModalOpen(false)} />}
 
-            {isViewModalOpen && selectedStaff && (
-                <div
-                    id="viewModal"
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-                >
-                    <div className="relative w-[50vw] h-[85vh] bg-white rounded-lg shadow-lg p-6 overflow-y-auto">
-                        <span
-                            className="absolute top-2 right-4 text-2xl font-bold text-gray-700 hover:text-gray-900 cursor-pointer"
-                            onClick={closeModal}
-                        >
-                            &times;
-                        </span>
-                        <h2 className="text-4xl font-bold text-center mb-6 text-gray-800">
-                            Staff Details
-                        </h2>
-                        <div className="grid grid-cols-2 gap-4">
-                            {Object.entries(selectedStaff).map(([key, value]) => (
-                                <p key={key} className="font-normal text-gray-600">
-                                    <span className="font-semibold">{key}: </span>
-                                    {value || "N/A"}
-                                </p>
-                            ))}
+                {isViewModalOpen && selectedStaff && (
+                    <div id="viewModal" className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="relative w-[50vw] h-[85vh] bg-white rounded-lg shadow-lg p-6 overflow-y-auto">
+                            <span
+                                className="absolute top-2 right-4 text-2xl font-bold text-gray-700 hover:text-gray-900 cursor-pointer"
+                                onClick={closeModal}
+                            >
+                                &times;
+                            </span>
+                            <h2 className="text-4xl font-bold text-center mb-6 text-gray-800">Staff Details</h2>
+                            <div className="grid grid-cols-2 gap-4">
+                                {Object.entries(selectedStaff).map(([key, value]) => (
+                                    <p key={key} className="font-normal text-gray-600">
+                                        <span className="font-semibold">{key}: </span>
+                                        {value || "N/A"}
+                                    </p>
+                                ))}
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
         </>
     );
 }

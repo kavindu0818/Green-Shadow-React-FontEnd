@@ -1,8 +1,9 @@
 import React, {useState} from "react";
 import {useDispatch} from "react-redux";
 import EquipmentModel from "../../model/EquipmentModel.ts";
-import {addEquipment} from "../../redux/EquipmentSlice.ts";
+import {saveEquipment} from "../../redux/EquipmentSlice.ts";
 import EquipmentInputModel from "./EquipmentInputModel.tsx";
+import {AppDispatch} from "../../store/store.tsx";
 
 export function AddEquipment({ onClose }: { onClose: () => void }) {
     const [equipCode, setEquipCode] = useState("");
@@ -13,7 +14,7 @@ export function AddEquipment({ onClose }: { onClose: () => void }) {
     const [fieldCode, setFieldCode] = useState("");
 
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -31,7 +32,7 @@ export function AddEquipment({ onClose }: { onClose: () => void }) {
 
 
             // Dispatch the addCrop action
-            dispatch(addEquipment(equipmentModel));
+            dispatch(saveEquipment(equipmentModel));
 
             // Reset state
             setEquipCode("");

@@ -3,6 +3,7 @@ import {useDispatch} from "react-redux";
 import EquipmentModel from "../../model/EquipmentModel.ts";
 import {updateEquipment} from "../../redux/EquipmentSlice.ts";
 import EquipmentInputModel from "./EquipmentInputModel.tsx";
+import {AppDispatch} from "../../store/store.tsx";
 
 interface UpdateEquipmentProps {
     equipmentToEdit: EquipmentModel | null; // Crop to be edited (passed dynamically)
@@ -17,7 +18,7 @@ const UpdateEquipment: React.FC<UpdateEquipmentProps> = ({equipmentToEdit, onClo
     const [fieldCode, setFieldCode] = useState("");
 
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
 
     // Debug: Ensure cropToEdit is valid before logging or using it
     useEffect(() => {

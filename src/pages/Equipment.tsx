@@ -1,11 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
-import { deleteCrop } from "../redux/CropSlice.ts";
-import UpdateCrop from "../commponet/crop/UpdateCrop.tsx";
+import {useEffect, useState} from "react";
 import EquipmentModel from "../model/EquipmentModel.ts";
 import AddEquipment from "../commponet/equipment/AddEquipment.tsx";
 import UpdateEquipment from "../commponet/equipment/UpdateEquipment.tsx";
-import {deleteEquipment} from "../redux/EquipmentSlice.ts";
+import {deleteEquipment, getAllEquipment} from "../redux/EquipmentSlice.ts";
+import {AppDispatch} from "../store/store.tsx";
 
 export function Equipment() {
     const equipmentModels: EquipmentModel[] = useSelector((state: any) => state.equipment); // Use correct Redux slice
@@ -15,7 +14,16 @@ export function Equipment() {
     const [searchTerm, setSearchTerm] = useState("");
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
     const [selectedEquipment, setSelectedEquipment] = useState<EquipmentModel | null>(null);
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
+
+    useEffect(() => {
+        dispatch(getAllEquipment()); // Fetch latest field data
+    }, [dispatch, equipmentModels]); // Re-fetch whenever fieldModels updates
+
+
+    useEffect(() => {
+        dispatch(getAllEquipment());
+    }, [dispatch]);
 
     const handleViewClick = (equipment: EquipmentModel) => {
         setSelectedEquipment(equipment);

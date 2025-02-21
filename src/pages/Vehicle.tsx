@@ -1,9 +1,10 @@
 import {useDispatch, useSelector} from "react-redux";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {VehicleModel} from "../model/VehicleModel.ts";
 import UpdateVehicle from "../commponet/vehicle/UpdateVehicle.tsx";
 import AddVehicle from "../commponet/vehicle/AddVehicle.tsx";
-import {deleteVehicle} from "../redux/VehicleSlice.ts";
+import {deleteVehicle, getAllVehicle} from "../redux/VehicleSlice.ts";
+import {AppDispatch} from "../store/store.tsx";
 
 export function Vehicle() {
 
@@ -14,7 +15,16 @@ export function Vehicle() {
     const [searchTerm, setSearchTerm] = useState("");
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
     const [selectedVehicle, setSelectedVehicle] = useState<VehicleModel | null>(null);
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
+
+    useEffect(() => {
+        dispatch(getAllVehicle()); // Fetch latest field data
+    }, [dispatch, vehicleModels]); // Re-fetch whenever fieldModels updates
+
+
+    useEffect(() => {
+        dispatch(getAllVehicle());
+    }, [dispatch]);
 
 
     const handleViewClick = (vehicle: VehicleModel) => {
@@ -148,10 +158,10 @@ export function Vehicle() {
                             &times;
                         </span>
                         <h2 className="text-4xl font-bold text-center mb-6 text-gray-800">
-                            CROP DETAILS
+                            VEHICLE DETAILS
                         </h2>
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-4 left-44 absolute">
+                            <div className="space-y-4 left-32 absolute">
                                 <p className="font-semibold text-gray-700">Vehicle Code:</p>
                                 <p className="font-semibold text-gray-700">License Plate Number:</p>
                                 <p className="font-semibold text-gray-700">Vehicle Category:</p>
@@ -174,7 +184,7 @@ export function Vehicle() {
                                     {selectedVehicle?.fuelType}
                                 </p>
                                 <p id="cropSeason" className="font-normal text-gray-600">
-                                    {selectedVehicle?.remake || "N/A"}
+                                    {selectedVehicle?.remark  || "N/A"}
                                 </p>
                                 <p id="cropField" className="font-normal text-gray-600">
                                     {selectedVehicle?.staffMemberDetails || "N/A"}

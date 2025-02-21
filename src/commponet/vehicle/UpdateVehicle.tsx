@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { VehicleModel } from "../../model/VehicleModel.ts";
 import { updateVehicle } from "../../redux/VehicleSlice.ts";
 import VehicleInputModel from "./VehicleInputModel.tsx";
+import {AppDispatch} from "../../store/store.tsx";
 
 interface UpdateVehicleProps {
     vehicleToEdit: VehicleModel; // Use the correct model type
@@ -15,10 +16,10 @@ const UpdateVehicle: React.FC<UpdateVehicleProps> = ({ vehicleToEdit, onClose })
     const [vehicleCategory, setVehicleCategory] = useState("");
     const [fuelType, setFuelType] = useState("");
     const [staffMemberDetails, setStaffMemberDetails] = useState("");
-    const [remake, setRemake] = useState("");
+    const [remark, setRemake] = useState("");
     const [status, setStatus] = useState("");
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
 
     // Initialize state with the data from vehicleToEdit
     useEffect(() => {
@@ -27,7 +28,7 @@ const UpdateVehicle: React.FC<UpdateVehicleProps> = ({ vehicleToEdit, onClose })
             setLicensePlateNumber(vehicleToEdit.licensePlateNumber || "");
             setVehicleCategory(vehicleToEdit.vehicleCategory || "");
             setFuelType(vehicleToEdit.fuelType || "");
-            setRemake(vehicleToEdit.remake || "");
+            setRemake(vehicleToEdit. remark  || "");
             setStaffMemberDetails(vehicleToEdit.staffMemberDetails || "");
             setStatus(vehicleToEdit.status || "");
         }
@@ -44,7 +45,7 @@ const UpdateVehicle: React.FC<UpdateVehicleProps> = ({ vehicleToEdit, onClose })
                 fuelType,
                 status,
                 staffMemberDetails,
-                remake
+                remark
             );
 
             // Dispatch the updateVehicle action
@@ -101,7 +102,7 @@ const UpdateVehicle: React.FC<UpdateVehicleProps> = ({ vehicleToEdit, onClose })
                     setStatus={setStatus}
                     staffMemberDetails={staffMemberDetails}
                     setStaffMemberDetails={setStaffMemberDetails}
-                    remake={remake}
+                    remake={remark}
                     setRemake={setRemake}
                 />
 

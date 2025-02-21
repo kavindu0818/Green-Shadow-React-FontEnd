@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useDispatch} from "react-redux";
 import {VehicleModel} from "../../model/VehicleModel.ts";
-import {addVehicle} from "../../redux/VehicleSlice.ts";
+import {saveVehicle} from "../../redux/VehicleSlice.ts";
 import VehicleInputModel from "./VehicleInputModel.tsx";
+import {AppDispatch} from "../../store/store.tsx";
 
 export function AddVehicle({ onClose }: { onClose: () => void }) {
 
@@ -11,11 +12,11 @@ export function AddVehicle({ onClose }: { onClose: () => void }) {
    const [vehicleCategory, setVehicleCategory] = useState("");
    const [fuelType, setFuelType] = useState("");
    const [staffMemberDetails , setStaffMemberDetails] = useState("");
-   const [remake, setRemake] = useState("");
+   const [remark, setRemake] = useState("");
    const [status, setStatus] = useState("");
 
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -29,11 +30,11 @@ export function AddVehicle({ onClose }: { onClose: () => void }) {
                 fuelType,
                 status,
                 staffMemberDetails,
-                remake
+                remark
             );
 
             // Dispatch the addVehicle action
-            dispatch(addVehicle(vehicleModel));
+            dispatch(saveVehicle(vehicleModel));
 
             // Reset state
             setVehicleCode("");
@@ -86,7 +87,7 @@ export function AddVehicle({ onClose }: { onClose: () => void }) {
                     setStatus = {setStatus}
                     staffMemberDetails={staffMemberDetails}
                     setStaffMemberDetails={setStaffMemberDetails}
-                    remake={remake}
+                    remake={remark}
                     setRemake={setRemake}
                 />
 

@@ -76,7 +76,6 @@ export function VehicleInputModel(props){
                     onChange={(e) => props.setStatus(e.target.value)}
                 />
 
-
                 <label htmlFor="inpF4" className="font-bold w-full absolute top-60 left-5">
                     Remake
                 </label>
@@ -85,7 +84,7 @@ export function VehicleInputModel(props){
                     type="text"
                     placeholder="Enter Remake"
                     className="absolute w-[33vw] top-3/4 shadow-lg rounded-lg p-2 border border-gray-400 left-5"
-                    value={props.remake}
+                    value={props.remark}
                     onChange={(e) => props.setRemake(e.target.value)}
                 />
                 <br/>
