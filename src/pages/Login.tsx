@@ -62,7 +62,7 @@ export function Login() {
                     {/* Header Section */}
                     <div className="mb-6">
                         <h2 className="text-6xl font-semibold text-white text-center">
-                            Login
+
                         </h2>
                         <p className="text-gray-400 text-sm text-center">
                             {/*Already a member?*/}
