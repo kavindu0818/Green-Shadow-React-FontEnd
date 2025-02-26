@@ -4,6 +4,7 @@ import CropSlice from "../redux/CropSlice";
 import EquipmentSlice from "../redux/EquipmentSlice.ts";
 import StaffSlice from "../redux/StaffSlice.ts";
 import VehicleSlice from "../redux/VehicleSlice.ts";
+import userSlice from "../redux/UserSlice.ts";
 
 // Create the Redux store
 export const store = configureStore({
@@ -12,7 +13,8 @@ export const store = configureStore({
         crop: CropSlice,
         equipment: EquipmentSlice,
         staff: StaffSlice,
-        vehicle: VehicleSlice
+        vehicle: VehicleSlice,
+        user: userSlice
     },
 });
 

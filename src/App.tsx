@@ -9,10 +9,14 @@ import {Staffe} from "./pages/Staffe";
 import {Vehicle} from "./pages/Vehicle";
 // import {React} from "react";
 import {RootLayout} from "./commponet/RootLayout.tsx";
+import React from "react";
+import Login from "./pages/Login.tsx";
 
 export function App() {
 
   const routes = createBrowserRouter([
+    { path: "/", element: <Login /> },
+
     {
       path: '',
       element : <RootLayout/>,
