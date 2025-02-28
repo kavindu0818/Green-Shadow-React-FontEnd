@@ -161,41 +161,48 @@ export function Crop() {
             {isAddModalOpen && <AddCrop onClose={() => setIsAddModalOpen(false)} />}
 
             {isViewModalOpen && selectedCrop && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="relative w-[50vw] h-[85vh] bg-white rounded-lg shadow-lg p-6 overflow-y-auto">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+                    <div
+                        className="relative w-[50vw] max-w-3xl h-[85vh] bg-white rounded-xl shadow-2xl p-8 overflow-y-auto">
                         <button
-                            className="absolute top-2 right-4 text-2xl font-bold text-gray-700 hover:text-gray-900"
+                            className="absolute top-4 right-4 text-3xl font-bold text-gray-600 hover:text-gray-900"
                             onClick={closeModal}
                         >
                             &times;
                         </button>
-                        <h2 className="text-4xl font-bold text-center mb-6 text-gray-800">CROP DETAILS</h2>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-4">
-                                <p className="font-semibold text-gray-700">Code:</p>
-                                <p className="font-semibold text-gray-700">Name:</p>
-                                <p className="font-semibold text-gray-700">Scientific Name:</p>
-                                <p className="font-semibold text-gray-700">Category:</p>
-                                <p className="font-semibold text-gray-700">Crop Season:</p>
-                                <p className="font-semibold text-gray-700">Field:</p>
-                                <p className="font-semibold text-gray-700">Images:</p>
+                        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">CROP DETAILS</h2>
+
+                        <div className="grid grid-cols-2 gap-6">
+                            <div
+                                className="flex flex-col items-start text-left space-y-4 font-semibold text-gray-700 ml-[140px]">
+                                <p>Code:</p>
+                                <p>Name:</p>
+                                <p>Scientific Name:</p>
+                                <p>Category:</p>
+                                <p>Crop Season:</p>
+                                <p>Field:</p>
+                                <p>Images:</p>
                             </div>
-                            <div className="space-y-4">
-                                <p className="text-gray-600">{selectedCrop?.cropCode}</p>
-                                <p className="text-gray-600">{selectedCrop?.cropCommonName}</p>
-                                <p className="text-gray-600">{selectedCrop?.cropScientificName || "N/A"}</p>
-                                <p className="text-gray-600">{selectedCrop?.cropCategory}</p>
-                                <p className="text-gray-600">{selectedCrop?.cropSeason || "N/A"}</p>
-                                <p className="text-gray-600">{selectedCrop?.fieldCode || "N/A"}</p>
+
+
+                            {/* Values */}
+                            <div className="space-y-4 text-gray-600">
+                                <p>{selectedCrop?.cropCode || "N/A"}</p>
+                                <p>{selectedCrop?.cropCommonName || "N/A"}</p>
+                                <p>{selectedCrop?.cropScientificName || "N/A"}</p>
+                                <p>{selectedCrop?.cropCategory || "N/A"}</p>
+                                <p>{selectedCrop?.cropSeason || "N/A"}</p>
+                                <p>{selectedCrop?.fieldCode || "N/A"}</p>
                                 <img
                                     src={selectedCrop?.cropImage || "https://via.placeholder.com/150"}
-                                    className="w-32 h-32 object-cover rounded-lg border border-gray-300"
+                                    className="w-40 h-40 object-cover rounded-lg border border-gray-300 shadow-sm"
                                     alt={selectedCrop?.cropCommonName || "Crop Image"}
                                 />
                             </div>
                         </div>
                     </div>
                 </div>
+
             )}
         </>
     );

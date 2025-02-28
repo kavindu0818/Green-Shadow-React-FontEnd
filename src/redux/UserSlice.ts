@@ -1,123 +1,186 @@
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import {UserModel} from "../model/UserModel.ts";
+import { UserModel } from "../model/UserModel.ts";
 
-
-const initialState:UserModel[]=[];
+const initialState = {
+    jwt_token: null,
+    refresh_token: null,
+    username: null,
+    isAuthenticated: false,
+    loading: false,
+    error: '',
+    users: [] as UserModel[], // Added users array to store fetched users
+};
 
 const api = axios.create({
-    baseURL:'http://localhost:3000/user'
-})
+    baseURL: 'http://localhost:3000/user',
+});
 
 export const saveUser = createAsyncThunk(
     "user/saveUser",
-    async (u: UserModel) => {
+    async (user: UserModel, { rejectWithValue }) => {
         try {
-            const response = await api.post('/add', u)
-            return response.data
-        } catch (err) {
-            console.log(err);
+            console.log("Slice", user);
+            const response = await api.post('/add', user, { withCredentials: true });
+            return response.data;
+        } catch (err: any) {
+            console.error("Error in saveUser thunk:", err);
+            return rejectWithValue(err.response?.data || "An error occurred");
         }
     }
-)
+);
+
+export const loginUser = createAsyncThunk(
+    "user/loginUser",
+    async (credentials: { phoneNumber: string; password: string }, { rejectWithValue }) => {
+        try {
+            const response = await api.post('/login', { user: credentials }, { withCredentials: true });
+            localStorage.setItem("accessToken", response.data.accessToken);
+            localStorage.setItem("refreshToken", response.data.refreshToken);
+            console.log("Token received:", response.data.accessToken);
+            return response.data;
+        } catch (err: any) {
+            return rejectWithValue(err.response?.data || "Login failed");
+        }
+    }
+);
 
 export const updateUser = createAsyncThunk(
     "user/updateUser",
-    async (u:UserModel) =>{
+    async (user: UserModel, { rejectWithValue }) => {
         try {
-            const response = await api.put(`/update/${u.phone}`, u)
-            return response.data
-        }catch (err){
-            console.log(err);
+            const response = await api.put(`/update/${user.phoneNumber}`, user);
+            return response.data;
+        } catch (err: any) {
+            console.error("Error updating user:", err);
+            return rejectWithValue(err.response?.data || "Update failed");
         }
     }
-)
+);
 
 export const deleteUser = createAsyncThunk(
     "user/deleteUser",
-    async (phone: string, { rejectWithValue }) => {
+    async (phoneNumber: string, { rejectWithValue }) => {
         try {
-            const response = await api.delete(`/delete/${phone}`);
+            const response = await api.delete(`/delete/${phoneNumber}`);
             if (response.status === 200) {
-                return { message: "Deleted successfully.", phone};
+                return { message: "Deleted successfully.", phoneNumber };
             } else {
                 return rejectWithValue("Failed to delete user.");
             }
-        } catch (err) {
+        } catch (err: any) {
             console.error("Error deleting user:", err);
-            return rejectWithValue(err || "Something went wrong.");
+            return rejectWithValue(err.response?.data || "Something went wrong.");
         }
     }
 );
 
 export const getAllUsers = createAsyncThunk(
     "user/getAllUsers",
-    async () => {
+    async (_, { rejectWithValue }) => {
         try {
             const response = await api.get('/');
+            console.log("Fetched users:", response.data);
             return response.data;
-        } catch (err) {
-            console.error(err);
-            throw err;
+        } catch (err: any) {
+            console.error("Error fetching users:", err);
+            return rejectWithValue(err.response?.data || "Error fetching users");
         }
     }
-)
+);
 
 const UserSlice = createSlice({
     name: "user",
     initialState,
-    reducers: {
-
-    }, extraReducers: (builder) => {
+    reducers: {},
+    extraReducers: (builder) => {
         builder
-            .addCase(saveUser.pending, () => {
-                console.log("pending user")
+            .addCase(saveUser.pending, (state) => {
+                console.log("Pending user save...");
+                state.loading = true;
             })
             .addCase(saveUser.fulfilled, (state, action) => {
-                console.log("fulfilled user")
-                state.push(action.payload);
+                console.log("User saved successfully");
+                state.loading = false;
+                state.users.push(action.payload);
             })
-            .addCase(saveUser.rejected, () => {
-                console.log("error user")
+            .addCase(saveUser.rejected, (state, action) => {
+                console.log("Error saving user");
+                state.loading = false;
+                state.error = action.payload as string;
             });
+
         builder
-            .addCase(updateUser.pending, () => {
-                console.log("pending update user")
+            .addCase(loginUser.pending, (state) => {
+                state.isAuthenticated = false;
+                state.loading = true;
+            })
+            .addCase(loginUser.fulfilled, (state, action) => {
+                state.jwt_token = action.payload.accessToken;
+                state.refresh_token = action.payload.refreshToken;
+                state.username = action.payload.username;
+                state.isAuthenticated = true;
+                state.loading = false;
+                state.error = "";
+            })
+            .addCase(loginUser.rejected, (state, action) => {
+                state.error = action.payload as string;
+                state.isAuthenticated = false;
+                state.loading = false;
+            });
+
+        builder
+            .addCase(updateUser.pending, (state) => {
+                console.log("Pending user update...");
+                state.loading = true;
             })
             .addCase(updateUser.fulfilled, (state, action) => {
-                console.log("fulfilled update user")
-                return state.map((user) =>
-                    user.username === action.payload.userName
-                        ? {...user, userName: action.payload.userName, password: action.payload.password,
-                            role: action.payload.role}
+                console.log("User updated successfully");
+                state.loading = false;
+                state.users = state.users.map((user) =>
+                    user.phoneNumber === action.payload.phoneNumber
+                        ? { ...user, ...action.payload }
                         : user
                 );
             })
-            .addCase(updateUser.rejected, () => {
-                console.log("error update user")
+            .addCase(updateUser.rejected, (state, action) => {
+                console.log("Error updating user");
+                state.loading = false;
+                state.error = action.payload as string;
             });
+
         builder
-            .addCase(deleteUser.pending, () => {
-                console.log("pending delete user")
+            .addCase(deleteUser.pending, (state) => {
+                console.log("Pending user deletion...");
+                state.loading = true;
             })
             .addCase(deleteUser.fulfilled, (state, action) => {
-                console.log("fulfilled delete user", action.payload.message); // Log the success message
-                return state.filter((user: UserModel) => user.phone !== action.payload.phone);
+                console.log("User deleted successfully");
+                state.loading = false;
+                state.users = state.users.filter((user) => user.phoneNumber !== action.payload.phoneNumber);
             })
-
-            .addCase(deleteUser.rejected, () => {
-                console.log("error delete user")
+            .addCase(deleteUser.rejected, (state, action) => {
+                console.log("Error deleting user");
+                state.loading = false;
+                state.error = action.payload as string;
             });
+
         builder
+            .addCase(getAllUsers.pending, (state) => {
+                console.log("Fetching users...");
+                state.loading = true;
+            })
             .addCase(getAllUsers.fulfilled, (state, action) => {
-                console.log("fetched user");
-                return action.payload;
+                console.log("Users fetched successfully");
+                state.loading = false;
+                state.users = action.payload;
             })
-            .addCase(getAllUsers.rejected, () => {
-                console.error("Error fetching user");
+            .addCase(getAllUsers.rejected, (state, action) => {
+                console.error("Error fetching users");
+                state.loading = false;
+                state.error = action.payload as string;
             });
-        builder
-    }
-})
+    },
+});
 
-export default UserSlice.reducer
+export default UserSlice.reducer;

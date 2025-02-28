@@ -1,16 +1,13 @@
-export class UserModel{
+export class UserModel {
+    phoneNumber: string;
+    userName: string;
+    password: string;
+    role: string;
 
-    username:string;
-    password:string;
-    role:string;
-    phone:string;
-
-    constructor(username:string,password:string,role:string,phone:string){
-        this.username=username;
-        this.password=password;
-        this.role=role;
-        this.phone=phone;
-
+    constructor(phoneNumber:string, userName: string, password: string, role: string) {
+        this.phoneNumber = phoneNumber;
+        this.userName = userName;
+        this.password = password;
+        this.role = role;
     }
-
 }

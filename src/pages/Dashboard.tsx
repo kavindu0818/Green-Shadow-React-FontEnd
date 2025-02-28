@@ -4,39 +4,39 @@ import staffImage from "../Aseats/staffe.png";
 import vehicle from "../Aseats/vehicelLogo.png";
 import equipment from "../Aseats/equipementIcon.png";
 // import video from "../Aseats/video/greenShadowVideo.mp4";
-import { Line } from "react-chartjs-2";
-import {
-    Chart as ChartJS,
-    LineElement,
-    CategoryScale,
-    LinearScale,
-    PointElement
-} from "chart.js";
+// import { Line } from "react-chartjs-2";
+// import {
+//     Chart as ChartJS,
+//     LineElement,
+//     CategoryScale,
+//     LinearScale,
+//     PointElement
+// } from "chart.js";
 
 // Register necessary components
-ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
+// ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
 
 export function Dashboard() {
 
-    const labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"];
+    // const labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"];
 
-    const data = {
-        labels: labels,
-        datasets: [
-            {
-                label: "My First Dataset",
-                data: [65, 59, 80, 81, 56, 55, 40],
-                fill: false,
-                borderColor: "rgb(75, 192, 192)",
-                tension: 0.1,
-            },
-        ],
-    };
-
-    const options = {
-        maintainAspectRatio: false, // Allows custom width/height
-        responsive: true,
-    };
+    // const data = {
+    //     labels: labels,
+    //     datasets: [
+    //         {
+    //             label: "My First Dataset",
+    //             data: [65, 59, 80, 81, 56, 55, 40],
+    //             fill: false,
+    //             borderColor: "rgb(75, 192, 192)",
+    //             tension: 0.1,
+    //         },
+    //     ],
+    // };
+    //
+    // const options = {
+    //     maintainAspectRatio: false, // Allows custom width/height
+    //     responsive: true,
+    // };
 
     return (
         <>
@@ -84,11 +84,11 @@ export function Dashboard() {
             {/*    </video>*/}
             {/*</div>*/}
 
-            <div className="w-2/3 h-36 mx-auto mt-10 relative top-20 left-60">
-                <div className="w-full h-96"> {/* Control size */}
-                    <Line data={data} options={options}/>
-                </div>
-            </div>
+            {/*<div className="w-2/3 h-36 mx-auto mt-10 relative top-20 left-60">*/}
+            {/*    <div className="w-full h-96"> /!* Control size *!/*/}
+            {/*        <Line data={data} options={options}/>*/}
+            {/*    </div>*/}
+            {/*</div>*/}
         </>
     );
 }
